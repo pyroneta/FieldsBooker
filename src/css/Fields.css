@@ -1,0 +1,142 @@
+
+
+.fields-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 40px 80px;
+  width: 100%;
+  flex: 1;
+}
+
+/* Toolbar */
+.fields-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.fields-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.filter-pill {
+  padding: 7px 16px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 500;
+
+  border: 1px solid var(--border);
+
+  background: transparent;
+  color: var(--muted);
+
+  transition: all .2s;
+}
+
+.filter-pill:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.04);
+}
+
+.filter-pill.active {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+
+  color: #fff;
+  font-weight: 700;
+
+  backdrop-filter: blur(10px);
+}
+
+.fields-search {
+  width: 240px;
+  flex-shrink: 0;
+}
+
+/* Header */
+.fields-header {
+  margin-bottom: 32px;
+}
+
+.fields-title {
+  font-size: 52px;
+  color: #fff;
+}
+
+.fields-title span {
+  color: rgba(255,255,255,0.7);
+}
+
+.fields-count {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Sport section */
+.sport-section {
+  margin-bottom: 52px;
+}
+
+.sport-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sport-section-title {
+  font-size: 34px;
+  color: #fff;
+}
+
+.sport-section-link {
+  font-size: 13px;
+  font-weight: 600;
+
+  color: rgba(255,255,255,0.55);
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  transition: color .2s;
+}
+
+.sport-section-link:hover {
+  color: #fff;
+}
+
+/* Grid */
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.fields-grid--flat {
+  margin-top: 0;
+}
+
+.fields-empty {
+  color: var(--muted);
+  font-size: 15px;
+
+  grid-column: 1/-1;
+
+  padding: 60px 0;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .fields-page { padding: 24px 16px 60px; }
+  .fields-title { font-size: 36px; }
+  .fields-search { width: 100%; }
+  .sport-section-title { font-size: 26px; }
+}

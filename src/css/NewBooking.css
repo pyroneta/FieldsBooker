@@ -1,0 +1,490 @@
+/* ── Page ──────────────────────────────────────────── */
+.nb-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.nb-header { margin-bottom: 40px; }
+
+.nb-title { font-size: 52px; margin-bottom: 24px; }
+.nb-title span { color: var(--accent); }
+
+/* ── Steps indicator ───────────────────────────────── */
+.steps { display: flex; align-items: center; }
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.step.active { color: var(--text); }
+.step.done   { color: var(--accent); }
+
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.step.active .step-circle { border-color: var(--accent); color: var(--accent); }
+.step.done   .step-circle { border-color: var(--accent); background: var(--accent); color: #000; }
+
+.step-line { width: 32px; height: 1px; background: var(--border); margin: 0 4px; }
+
+/* ── Step body ─────────────────────────────────────── */
+.nb-step {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.nb-step h2 { font-size: 32px; }
+
+/* Generic primary button inside a step */
+.nb-step > button:not(.nb-btn) {
+  align-self: flex-start;
+  padding: 12px 24px;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  transition: opacity .15s;
+}
+.nb-step > button:not(.nb-btn):hover    { opacity: .85; }
+.nb-step > button:not(.nb-btn):disabled { opacity: .35; cursor: not-allowed; }
+
+/* ── Step 0 – sport grid ───────────────────────────── */
+.nb-sports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+.nb-sports-grid button {
+  padding: 20px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  transition: border-color .15s, color .15s;
+}
+.nb-sports-grid button:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Step 1 – fields grid ──────────────────────────── */
+.nb-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.nb-fields-grid button {
+  padding: 20px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color .15s;
+}
+.nb-fields-grid button:hover { border-color: var(--accent); }
+
+/* ── Step 2 – schedule ─────────────────────────────── */
+.nb-step--schedule { max-width: none; }
+
+.nb-loading {
+  text-align: center;
+  color: var(--muted);
+  padding: 48px;
+  font-size: 14px;
+}
+
+.nb-schedule-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.nb-schedule-wrap::-webkit-scrollbar       { height: 4px; }
+.nb-schedule-wrap::-webkit-scrollbar-thumb { background: #333; border-radius: 99px; }
+
+.nb-schedule-grid {
+  display: grid;
+  grid-template-columns: 52px repeat(7, minmax(72px, 1fr));
+  gap: 3px;
+  padding: 12px;
+  min-width: 600px;
+}
+
+.nb-schedule-corner { /* intentionally empty */ }
+
+/* Day column headers */
+.nb-day-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: border-color .2s, background .2s;
+}
+.nb-day-header--active {
+  border-color: var(--accent);
+  background: rgba(163, 230, 53, 0.07);
+}
+
+.nb-day-name {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+}
+.nb-day-header--active .nb-day-name { color: var(--accent); }
+
+.nb-day-num { font-size: 12px; font-weight: 600; }
+.nb-day-header--active .nb-day-num { color: var(--accent); }
+
+/* Time labels */
+.nb-time-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  height: 34px;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .03em;
+}
+
+/* ── Slot blocks ───────────────────────────────────── */
+.nb-block {
+  height: 34px;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: var(--surface2);
+  cursor: pointer;
+  transition: transform .1s, border-color .15s, background .15s;
+  position: relative;
+  overflow: hidden;
+}
+.nb-block:not(:disabled):active { transform: scale(0.93); }
+
+.nb-block--free {
+  border-color: var(--border);
+  background: var(--surface2);
+}
+.nb-block--free:hover {
+  border-color: rgba(163, 230, 53, 0.4);
+  background: rgba(163, 230, 53, 0.05);
+}
+
+.nb-block--past {
+  background: var(--bg);
+  border-color: transparent;
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.nb-block--booked {
+  background: rgba(239, 68, 68, 0.07);
+  border-color: rgba(239, 68, 68, 0.18);
+  cursor: not-allowed;
+}
+.nb-block--booked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(239, 68, 68, 0.13) 0px,
+    rgba(239, 68, 68, 0.13) 3px,
+    transparent 3px,
+    transparent 9px
+  );
+}
+
+/* Diagonal split – top-left: accent / bottom-right: surface */
+.nb-block--selected {
+  background: linear-gradient(135deg, var(--accent) 52%, var(--surface2) 52%);
+  border-color: var(--accent);
+}
+.nb-block--selected:hover { opacity: 0.88; }
+
+/* ── Legend ────────────────────────────────────────── */
+.nb-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.nb-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.nb-legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.nb-legend-dot--free     { background: var(--surface2); border: 1px solid var(--border); }
+.nb-legend-dot--booked   { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.25); }
+.nb-legend-dot--selected { background: linear-gradient(135deg, var(--accent) 52%, var(--surface2) 52%); border: 1px solid var(--accent); }
+.nb-legend-dot--past     { background: var(--bg); border: 1px solid transparent; opacity: 0.3; }
+
+/* ── Selection bar ─────────────────────────────────── */
+.nb-selection-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  flex-wrap: wrap;
+}
+.nb-selection-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+.nb-selection-info strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: .03em;
+  color: var(--accent);
+}
+
+/* ── Primary button ────────────────────────────────── */
+.nb-btn {
+  padding: 12px 22px;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  transition: opacity .15s;
+}
+.nb-btn:hover    { opacity: .85; }
+.nb-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── Step 3 – confirm form ─────────────────────────── */
+.nb-step input,
+.nb-step textarea,
+.nb-step select { width: 100%; }
+
+.nb-error {
+  font-size: 13px;
+  color: #ef4444;
+  padding: 10px 14px;
+  background: rgba(239,68,68,.08);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(239,68,68,.18);
+}
+
+/* ── Success ───────────────────────────────────────── */
+.nb-success {
+  max-width: 480px;
+  margin: 80px auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.nb-success h2 { font-size: 40px; }
+.nb-success button {
+  padding: 12px 24px;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  transition: opacity .15s;
+}
+.nb-success button:hover { opacity: .85; }
+
+/* ── Step 3 – Pago ─────────────────────────────────── */
+.nb-edit-pay { margin-top: 16px; }
+
+.nb-pay-summary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.nb-pay-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 20px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.nb-pay-row:last-child { border-bottom: none; }
+.nb-pay-row span  { color: var(--muted); }
+.nb-pay-row strong { color: var(--text); }
+
+.nb-pay-row--total {
+  background: rgba(163,230,53,0.05);
+  padding: 16px 20px;
+}
+.nb-pay-row--total span   { font-weight: 600; color: var(--text); }
+.nb-pay-row--total strong { font-size: 22px; font-family: 'Bebas Neue', sans-serif; color: var(--accent); letter-spacing: .03em; }
+
+.nb-pay-section { display: flex; flex-direction: column; gap: 8px; }
+
+.nb-pay-label { font-size: 13px; font-weight: 600; color: var(--text); }
+
+.nb-pay-hint  { font-size: 12px; color: var(--muted); }
+
+.nb-muted { color: var(--muted); font-weight: 400; }
+
+.nb-pay-warning {
+  font-size: 12px;
+  color: #fb923c;
+  font-weight: 500;
+}
+
+.nb-pay-types {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nb-pay-type {
+  padding: 10px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.nb-pay-type:hover { border-color: rgba(163,230,53,0.3); color: var(--text); }
+.nb-pay-type--active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(163,230,53,0.07);
+}
+
+.nb-btn--qr {
+  align-self: flex-start;
+  font-size: 15px;
+  padding: 14px 32px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── QR Popup ───────────────────────────────────────── */
+.nb-qr-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn .2s ease;
+}
+
+.nb-qr-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 48px 40px 40px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  animation: fadeUp .25s ease;
+}
+
+.nb-qr-icon { font-size: 48px; }
+
+.nb-qr-msg {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: .04em;
+  color: var(--accent);
+}
+
+.nb-qr-sub { font-size: 13px; color: var(--muted); }
+
+.nb-qr-bar-wrap {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.nb-qr-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width .05s linear;
+}
+
+/* ── Success ────────────────────────────────────────── */
+.nb-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(163,230,53,0.15);
+  border: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--accent);
+}
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 600px) {
+  .nb-page { padding: 24px 16px 60px; }
+  .nb-title { font-size: 34px; }
+  .nb-step h2 { font-size: 24px; }
+  .step span { display: none; }
+  .step-line { width: 20px; }
+  .nb-schedule-grid {
+    grid-template-columns: 44px repeat(7, minmax(58px, 1fr));
+    min-width: 480px;
+  }
+  .nb-block { height: 30px; }
+  .nb-time-label { height: 30px; }
+  .nb-selection-bar { flex-direction: column; align-items: flex-start; }
+  .nb-btn { width: 100%; text-align: center; }
+  .nb-btn--qr { align-self: stretch; }
+}

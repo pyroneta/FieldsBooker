@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0a0a0a;
+  --surface:   #111111;
+  --surface2:  #1a1a1a;
+  --border:    rgba(255,255,255,0.07);
+  --text:      #f0f0f0;
+  --muted:     #666;
+  --accent:    #a3e635;
+  --radius:    16px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root { min-height: 100vh; display: flex; flex-direction: column; }
+
+h1, h2, h3, h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.03em; line-height: 1; }
+
+a { color: inherit; text-decoration: none; }
+
+button { font-family: 'DM Sans', sans-serif; cursor: pointer; border: none; outline: none; }
+
+input, select, textarea {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 14px;
+  width: 100%;
+  outline: none;
+  transition: border-color .2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+}
+input::placeholder, textarea::placeholder { color: var(--muted); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 99px; }
+
+/* Utility */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.tag.disponible  { background: rgba(163,230,53,.15); color: #a3e635; }
+.tag.no_disponible { background: rgba(239,68,68,.15); color: #ef4444; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-up { animation: fadeUp .45s ease both; }
+.fade-in { animation: fadeIn .3s ease both; }

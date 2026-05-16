@@ -1,0 +1,249 @@
+/* ── Sport Carousel ─────────────────────────────────────── */
+
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  user-select: none;
+}
+
+.carousel-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Tarjeta base ── */
+.carousel-card {
+  position: absolute;
+  width: 300px;
+  height: 420px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform 0.55s cubic-bezier(.22,.68,0,1.1),
+    opacity 0.55s ease,
+    box-shadow 0.55s ease,
+    filter 0.55s ease;
+  will-change: transform, opacity;
+}
+
+/* ── Posiciones ── */
+.carousel-card.pos-center {
+  transform: translateX(0) scale(1) translateZ(0);
+  opacity: 1;
+  z-index: 5;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 2px var(--accent);
+  filter: brightness(1);
+}
+
+.carousel-card.pos-right1 {
+  transform: translateX(280px) scale(0.82) translateZ(-80px);
+  opacity: 0.7;
+  z-index: 4;
+  filter: brightness(0.65);
+}
+
+.carousel-card.pos-right2 {
+  transform: translateX(480px) scale(0.65) translateZ(-160px);
+  opacity: 0.4;
+  z-index: 3;
+  filter: brightness(0.45);
+}
+
+.carousel-card.pos-left1 {
+  transform: translateX(-280px) scale(0.82) translateZ(-80px);
+  opacity: 0.7;
+  z-index: 4;
+  filter: brightness(0.65);
+}
+
+.carousel-card.pos-left2 {
+  transform: translateX(-480px) scale(0.65) translateZ(-160px);
+  opacity: 0.4;
+  z-index: 3;
+  filter: brightness(0.45);
+}
+
+.carousel-card.pos-hidden {
+  transform: translateX(0) scale(0.4) translateZ(-300px);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Hover solo en center */
+.carousel-card.pos-center:hover {
+  transform: translateX(0) scale(1.03) translateZ(0);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 0 2px var(--accent);
+}
+
+/* ── Imagen de fondo ── */
+.carousel-card-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+
+.carousel-card.pos-center:hover .carousel-card-bg {
+  transform: scale(1.06);
+}
+
+/* ── Overlay ── */
+.carousel-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 25%,
+    rgba(0,0,0,0.2) 55%,
+    rgba(0,0,0,0.8) 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Badge ── */
+.carousel-card-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--accent, #a3e635);
+  color: #000;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 99px;
+  z-index: 2;
+}
+
+/* ── Glass panel inferior ── */
+.carousel-card-glass {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 20px 22px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px) saturate(1.5);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5);
+  border-top: 1px solid rgba(255,255,255,0.13);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.carousel-card-count {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+
+.carousel-card-name {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.carousel-card-cta {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent, #a3e635);
+  letter-spacing: 0.04em;
+  animation: fadeInUp 0.3s ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Dots ── */
+.carousel-dots {
+  position: absolute;
+  bottom: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.25);
+  border: none;
+  cursor: pointer;
+  transition: width 0.3s ease, background 0.3s ease;
+  padding: 0;
+}
+
+.carousel-dot.active {
+  width: 24px;
+  background: var(--accent, #a3e635);
+}
+
+/* ── Flechas ── */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.carousel-arrow:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: var(--accent, #a3e635);
+}
+
+.carousel-arrow.left  { left: 16px; }
+.carousel-arrow.right { right: 16px; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .carousel-wrapper { height: 380px; }
+  .carousel-card { width: 240px; height: 340px; }
+  .carousel-card.pos-right1 { transform: translateX(210px) scale(0.8) translateZ(-80px); }
+  .carousel-card.pos-left1  { transform: translateX(-210px) scale(0.8) translateZ(-80px); }
+  .carousel-card.pos-right2,
+  .carousel-card.pos-left2  { opacity: 0; pointer-events: none; }
+}
