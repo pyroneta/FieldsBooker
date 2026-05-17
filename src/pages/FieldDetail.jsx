@@ -66,7 +66,7 @@ export default function FieldDetail() {
             ) : (
 
               <div className="detail-placeholder">
-                ⚽
+                
               </div>
 
             )}
@@ -88,7 +88,7 @@ export default function FieldDetail() {
             </h1>
 
             <p className="detail-location">
-              📍 {field.ubication}
+               {field.ubication}
             </p>
 
             {field.description && (

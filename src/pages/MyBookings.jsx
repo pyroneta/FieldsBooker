@@ -128,8 +128,8 @@ export default function MyBookings() {
                     {b.field?.sport?.name && (
                       <span className="res-sport">{b.field.sport.name}</span>
                     )}
-                    <h3 className="res-field">{b.field?.name || "Cancha"}</h3>
-                    <p className="res-loc">📍 {b.field?.ubication}</p>
+                    <h3 className="res-field">{b.field?.name || b.fieldName || "Cancha"}</h3>
+                    <p className="res-loc"> {b.field?.ubication}</p>
                     <div className="res-time">
                       <span>🗓 {fmtDate(b.dateStart)}</span>
                       <span className="res-arrow">→</span>

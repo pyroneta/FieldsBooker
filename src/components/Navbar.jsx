@@ -52,7 +52,7 @@ export default function Navbar() {
       ) : (
         <nav className="navbar navbar-inner">
           <Link to="/" className="navbar-logo">
-            <span className="logo-bracket">[</span>OLE<span className="logo-bracket">]</span>
+            <span className="logo-bracket">[</span>OLÉ<span className="logo-bracket">]</span>
           </Link>
           <div className="navbar-inner-right">
             <Link to="/bookings/new" className="navbar-cta">+ Reservar</Link>
@@ -68,7 +68,7 @@ export default function Navbar() {
         <div className="nav-drawer-panel">
           <div className="nav-drawer-header">
             <Link to="/" className="navbar-logo" onClick={() => setOpen(false)}>
-              <span className="logo-bracket">[</span>OLE<span className="logo-bracket">]</span>
+              <span className="logo-bracket">[</span>OLÉ<span className="logo-bracket">]</span>
             </Link>
             <button className="drawer-close" onClick={() => setOpen(false)}>✕</button>
           </div>
@@ -86,9 +86,6 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-          <Link to="/bookings/new" className="drawer-cta" onClick={() => setOpen(false)}>
-            + Reservar cancha
-          </Link>
         </div>
       </div>
     </>

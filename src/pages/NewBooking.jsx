@@ -97,7 +97,7 @@ function QRPopup({ onDone, onError }) {
   return (
     <div className="nb-qr-backdrop">
       <div className="nb-qr-modal">
-        <div className="nb-qr-icon">📱</div>
+        <div className="nb-qr-icon"></div>
         <p className="nb-qr-msg">aquí iría un qr xd</p>
         <p className="nb-qr-sub">Procesando tu reserva…</p>
         <div className="nb-qr-bar-wrap">
@@ -167,7 +167,10 @@ export default function NewBooking() {
     start.setHours(0, 0, 0, 0);
     const end = new Date(days[days.length - 1]);
     end.setHours(23, 59, 59, 0);
-    const fmt = (d) => d.toISOString().slice(0, 19);
+    const fmt = (d) => {
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+    };
     setLoadingAvail(true);
     setSelectedSlots([]);
     setSelectedDay(0);
@@ -270,9 +273,8 @@ export default function NewBooking() {
     try {
       const fmtDate = (base, timeStr) => {
         const d = new Date(base);
-        const [h, m] = timeStr.split(":").map(Number);
-        d.setHours(h, m, 0, 0);
-        return d.toISOString().slice(0, 19);
+        const pad = (n) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${timeStr}:00`;
       };
       await createBooking({
         id_field:     selectedField.idField,
@@ -297,9 +299,8 @@ export default function NewBooking() {
     try {
       const fmtDate = (base, timeStr) => {
         const d = new Date(base);
-        const [h, m] = timeStr.split(":").map(Number);
-        d.setHours(h, m, 0, 0);
-        return d.toISOString().slice(0, 19);
+        const pad = (n) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${timeStr}:00`;
       };
       await updateBooking(
         editId,

@@ -31,7 +31,7 @@ export default function FieldCard({ field, sportName, delay = 0 }) {
 />
 ) : (
           <div className="field-card-placeholder">
-            <span>{sportName?.charAt(0) || "⚽"}</span>
+            <span>{sportName?.charAt(0) || ""}</span>
           </div>
         )}
 

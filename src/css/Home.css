@@ -58,19 +58,21 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 48px 110px;
+  padding: 0 48px 120px;
   gap: 32px;
   height: 100%;
 }
-
-/* ── Izquierda ── */
+/* todo de la izq */
 .home-left {
   flex: 1;
   max-width: 560px;
+
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-bottom: 0;
+
+  padding-bottom: 10px;
+
   gap: 0;
 }
 
@@ -99,7 +101,7 @@
 }
 
 .hero-sub {
-  font-size: 15px;
+  font-size: 18px;
   color: rgba(255,255,255,0.75);
   max-width: 400px;
   margin-bottom: 32px;
@@ -121,7 +123,7 @@
   background: #a3e635;
   color: #000;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 16px;
   letter-spacing: 0.08em;
   border-radius: 99px;
   text-transform: uppercase;
@@ -154,19 +156,36 @@
 }
 
 .nav-arrow {
-  width: 44px;
-  height: 44px;
+  width: 64px;
+  height: 64px;
+
   border-radius: 50%;
+
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.15);
+
   color: #fff;
-  font-size: 22px;
+  font-size: 30px;
+
   cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, border-color 0.2s;
+
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+
   line-height: 1;
+}
+
+.nav-arrow:hover {
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.4);
+
+  transform: scale(1.05);
 }
 .nav-arrow:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.4); }
 
@@ -177,8 +196,8 @@
   margin-left: 4px;
 }
 .carousel-dot {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
   border-radius: 99px;
   background: rgba(255,255,255,0.25);
   border: none;
@@ -199,8 +218,8 @@
 /* Tarjeta principal */
 .main-card {
   position: relative;
-  width: 300px;
-  height: 420px;
+  width: 380px;
+  height: 520px;
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
@@ -289,8 +308,8 @@
 /* Tarjeta peek (siguiente, asomándose) */
 .peek-card {
   position: relative;
-  width: 180px;
-  height: 300px;
+  width: 240px;
+  height: 400px;
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
@@ -378,8 +397,8 @@
 @media (max-width: 900px) {
   .home-layout { flex-direction: column; align-items: flex-start; padding: 24px 24px 80px; justify-content: flex-end; }
   .home-right { width: 100%; justify-content: center; }
-  .main-card { width: 240px; height: 340px; }
-  .peek-card { width: 140px; height: 260px; }
+  .main-card { width: 280px; height: 400px; }
+  .peek-card { width: 170px; height: 310px; }
   .hero-title { font-size: 56px; }
   .home-index { font-size: 100px; right: 16px; }
 }

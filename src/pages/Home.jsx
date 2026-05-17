@@ -126,13 +126,6 @@ export default function Home() {
             Sin llamadas, sin esperas.
           </p>
 
-          <div className="hero-actions">
-            <Link to="/fields" className="btn-primary" style={{ background: activeSport?.accent }}>
-              EXPLORAR CANCHAS
-            </Link>
-            <Link to="/bookings" className="btn-ghost">Mis reservas</Link>
-          </div>
-
           {/* Flechas + dots abajo a la izquierda */}
           <div className="hero-nav">
             <button className="nav-arrow" onClick={() => { clearInterval(autoplayRef.current); prev(); startAutoplay(); }}>‹</button>
