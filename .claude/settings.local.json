@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(git init *)",
-      "Bash(git remote *)"
+      "Bash(git remote *)",
+      "Bash(dir C:\\\\Projects\\\\fields *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }

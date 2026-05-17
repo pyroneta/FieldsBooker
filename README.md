@@ -1,269 +1,224 @@
-# Sistema de Reservas de Canchas Deportivas
+bueno antes de leer todo, siento que tome en cuenta y asumi fallas y validaciones necesarias en un sistema como este mas alla de los requerimientos minimos, no esta del todo completo como me gustaria pero creo que me ajuste bien al tiempo, es mi segunda o tercera vez desplegando algo en vercel asi q es un gran aporte, tambien siento que mis diseños de la pagina podrian haber sido mejores pero no se me ocurria nada que grite "deporte", pero siento que me esforce y use las varias cosas que sé, cualquier pregunta o feedback es bienvenido
+psdt: no pegue los comandos de la db porque como ya esta en la db de render creo que se obvia, pero si los necesitan los paso 
 
-## Stack tecnológico
 
-**Backend**
-- Java 17
-- Spring Boot 4.0.6
-- Spring Security 7 (autenticación stateless con JWT)
-- Spring Data JPA + Hibernate 7
-- PostgreSQL 15
-- jjwt 0.12.3 (generación y validación de tokens)
-- Lombok (reducción de boilerplate)
-- Bean Validation (jakarta.validation)
+OLÉ — Gestión de Reservas de Canchas Deportivas
+Stack tecnológico — Backend
 
-**Frontend**
-- React 18 (Vite)
-- Axios (cliente HTTP con interceptor de autenticación)
-- Tailwind CSS
-- React Router
+Java 17
+Spring Boot 4.0.6
+Spring Security 7 (autenticación stateless con JWT)
+Spring Data JPA + Hibernate 7
+PostgreSQL 15
+jjwt 0.12.3 (generación y validación de tokens)
+Lombok (reducción de boilerplate)
+Bean Validation (jakarta.validation)
 
----
 
-## Decisiones técnicas principales
+**Decisiones técnicas principales**
+**Springboot como framework**
+La verdad tengo poca experiencia con este framework, comence a usarlo hace como un mes porque ahora estamos cursando CERTIFICACION III justo con springboot y pienso re utilizar el sistema que hice para base de datos avanzadas
+Y hace como un mes comence a probarlo para ir llevando todo a Springboot
+Siento que es completo, me llama bastante la atencion y todo lo que sea Java es bienvenido
 
 **PostgreSQL como base de datos**
+Elegi PostgreSQL porque es con el que me siento mas comodo, desde que comence a trabajar en proyectos mas complejos lo uso y estoy acostumbrado a su sintaxis. 
+Primero desarrolle toda la base de datos dentro de DataGrip y luego adapté los datos al proyecto de Spring Boot.
+Decidi usar variables en inglés porque en los requisitos decía "fields" así que para que no quedara diferente seguí en el mismo idioma. Me di cuenta un poco tarde que pedía que la API se llame /reservations y me gustaba más /bookings.
+Usé UUID porque un docente (Ricardo Laredo) me enseñó que era la mejor práctica, ya que garantiza unicidad global sin depender de un servidor central.
+Para los estados y tipos de pago (type_payment, status_bill, status_booking, status_field) usé ENUM porque no tenían tantos valores diferentes como para justificar una tabla aparte. Luego tuve que migrarlos a VARCHAR en el backend para que fueran compatibles con el binding de parámetros de Hibernate 6+.
+Autenticación JWT stateless
+No utilicé sesión en el servidor. Ya había utilizado JWT en un sistema de Sistemas Distribuidos así que lo recicié.
+Separación de responsabilidades
 
-Elegí PostgreSQL porque es con el que me siento mas cómodo, desde que comence a trabajar en proyectos mas complejos lo uso y estoy acostumbrado a su sintaxis-
-Primeramente desarrolle tota mi base de datos dentro de Datagrip. Posteriormente adapte los datos al proyecto de Springboot
-Decidi usar variables en ingles porque en los requisitos decia fields asi que para que no quede diferente segui asi, me di cuenta un poco tarde que pedia que la api se llamase /reservations, me gustaba mas /bookings.
-Utilice UUID porque un docente me enseño que era la mejor practica, ya que garantiza una unicidad global sin importar el servidor central que se utilice
-En los datos como type_payment, status_bill, status_booking, status_field utilice ENUM porque no tenian tantos valores diferentes como para tener que hacer una tabla aparte.
-Esto luego lo tuve que migrar como VARCHAR en el back porque necesitaba ser compatible con Hibernate.
+entity: modelos JPA mapeados a tablas
+repository: interfaces con queries personalizadas
+service: lógica de negocio
+controller: exposición HTTP
+dto: objetos de transferencia de datos
+config: seguridad, CORS, JWT
 
-**Foto del Diagrama de Base de Datos hecho en DataGrip**
-![img.png](img.png)
+Pago minimo del 50%
+Esto fue algo que agregue al sistema para evitar que alguien reserve varias canchas y se dé a la fuga. La reserva requiere un pago inicial de al menos el 50% del total y el total se calcula automaticamente según las horas reservadas y el precio por hora de la cancha. Si una reserva se edita y el nuevo 50% es mayor, se pide que pague la diferencia.
 
 
 
-**Autenticación JWT stateless**
-No utilice sesión en el servidor, cada request autenticado incluye un Bearer token en el header authorization. 
-El token se genera al registrarse o iniciar sesión y expira en 24 horas. 
-El payload incluye el clientId (en UUID) y el email como subject. 
-La extracción del cliente en los endpoints protegidos se realiza directamente desde el SecurityContext sin necesidad de consultar la base de datos en el filtro.
+**DB**
+![img_1.png](img_1.png)
+sport: sport associated with the field (name, image URL)
+field: sports field (name, sport, location, price/hour, opening/closing time, image, status)
+client: system user (name, lastname, unique email, phone number, BCrypt password)
+booking: reservation (field, client, start date, end date, total, status, observations)
+payment: payments made (amount, type, date, booking)
+bill: invoice per booking (total amount, paid amount, status, issue date)
+Todo en la DB está en inglés con snake_case.
+Enums
 
-**Separación de responsabilidades**
-- entity: modelos JPA mapeados a tablas
-- repository: interfaces SpringData con queries personalizadas
-- service: logica de negocio
-- controller: exposición HTTP
-- dto: objetos de transferencia de datos (request/response)
-- config: seguridad, CORS, JWT
+StatusField: available, not_available
+StatusBooking: pending, confirmed, cancelled, completed
+StatusBill: paid, partially_paid, cancelled
+TypePayment: QR, cash
 
-**Pago mínimo del 50%**
-Esto fue algo agregado que le di al sistema, para evitar que cualquier persona reserve 5 canchas y se de a la fuga.
-La reserva requiere un pago inicial de al menos el 50% del total. 
-El total se calcula automaticamente segun las horas reservadas y el precio por hora de la cancha. 
-Se genera un registro en payment y una bill asociada con estado paid o partially_paid.
+**Relaciones**
 
----
+Field → Sport (ManyToOne)
+Booking → Field (ManyToOne)
+Booking → Client (ManyToOne)
+Payment → Booking (ManyToOne)
+Bill → Booking (OneToOne)
 
-## Modelo de datos
 
-### Tablas principales
-
-- sport: deporte asociado a la cancha (nombre, imagen)
-- field: cancha deportiva (nombre, deporte, ubicación, precio/hora, horario apertura/cierre, imagen, estado)
-- client: usuario del sistema (nombre, apellido, email único, teléfono, password BCrypt)
-- booking: reserva (cancha, cliente, fecha inicio, fecha fin, total, estado, observaciones)
-- payment: pagos realizados (monto, tipo, fecha, reserva)
-- bill: factura por reserva (total, pagado, estado, fecha emisión)
-Todo en la db esta en ingles con camelCase
-
-### Enums
-
-- StatusField: available, not_available
-- StatusBooking: pending, confirmed, cancelled, completed
-- StatusBill: paid, partially_paid, cancelled
-- TypePayment: QR, cash
-
-### Relaciones
-
-- Field → Sport (ManyToOne)
-- Booking → Field (ManyToOne)
-- Booking → Client (ManyToOne)
-- Payment → Booking (ManyToOne)
-- Bill → Booking (OneToOne)
-
----
-
-## Endpoints
-
-### Autenticación
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| POST | /api/auth/register | Registro de cliente. Retorna AuthResponse con token JWT |
-| POST | /api/auth/login | Login. Retorna AuthResponse con token JWT |
-
-**AuthResponse:**
-```json
-{
-  "idClient": "uuid",
-  "name": "string",
-  "lastname": "string",
-  "email": "string",
-  "phoneNumber": "string",
-  "token": "eyJ..."
+Endpoints
+Autenticación
+MétodoRutaDescripciónPOST/api/auth/registerRegistro de cliente. Retorna AuthResponse con token JWTPOST/api/auth/loginLogin. Retorna AuthResponse con token JWT
+AuthResponse:
+json{
+"idClient": "uuid",
+"name": "string",
+"lastname": "string",
+"email": "string",
+"phoneNumber": "string",
+"token": "eyJ..."
 }
-```
-
-### Canchas
-
-| Método | Ruta | Auth | Descripción |
-|--------|------|------|-------------|
-| GET | /fields | No | Lista todas las canchas |
-| GET | /fields/:id | No | Detalle de una cancha |
-| GET | /fields/available | No | Solo canchas con estado available |
-| GET | /fields/:id/availability | No | Slots ocupados en un rango de fechas |
-
+Canchas
+MétodoRutaAuthDescripciónGET/fieldsNoLista todas las canchasGET/fields/:idNoDetalle de una canchaGET/fields/availableNoSolo canchas con estado availableGET/fields/:id/availabilityNoSlots ocupados en un rango de fechas (excluye canceladas)
 Parámetros de /fields/:id/availability:
-- start (LocalDateTime, requerido)
-- end (LocalDateTime, requerido)
-- excludeBooking (UUID, opcional — excluye una reserva del cálculo, usado en edición)
 
-### Reservas
+start (LocalDateTime, requerido)
+end (LocalDateTime, requerido)
+excludeBooking (UUID, opcional — excluye una reserva del cálculo, usado al editar)
 
-| Método | Ruta | Auth | Descripción |
-|--------|------|------|-------------|
-| GET | /bookings | No | Lista todas las reservas |
-| GET | /bookings/my | Sí | Reservas del cliente autenticado |
-| GET | /bookings/:id | No | Detalle de una reserva |
-| POST | /bookings | Sí | Crear reserva |
-| PUT | /bookings/:id | Sí | Editar fechas de una reserva |
-| PUT | /bookings/:id/cancel | No | Cancelar una reserva |
-| GET | /bookings/:id/payment-status | No | Estado de pago (total, pagado, pendiente) |
-
-**Body POST /bookings:**
-```json
-{
-  "id_field": "uuid",
-  "date_start": "2026-05-17T10:00:00",
-  "date_end": "2026-05-17T12:00:00",
-  "amount": 120.00,
-  "type_payment": "QR",
-  "observations": "string opcional"
+Reservas
+MétodoRutaAuthDescripciónGET/bookingsNoLista todas las reservasGET/bookings/mySíReservas del cliente autenticadoGET/bookings/:idNoDetalle de una reservaPOST/bookingsSíCrear reservaPUT/bookings/:idSíEditar fechas de una reservaPUT/bookings/:id/cancelNoCancelar una reservaGET/bookings/:id/payment-statusNoEstado de pago (total, pagado, pendiente)
+Body POST /bookings:
+json{
+"id_field": "uuid",
+"date_start": "2026-05-17T10:00:00",
+"date_end": "2026-05-17T12:00:00",
+"amount": 120.00,
+"type_payment": "QR",
+"observations": "string opcional"
 }
-```
-
-**Parametros PUT /bookings/:id:**
-- dateStart (LocalDateTime, requerido)
-- dateEnd (LocalDateTime, requerido)
-- amount (BigDecimal, opcional — pago adicional si el nuevo total requiere más)
-
-**BookingResponse:**
-```json
-{
-  "idBooking": "uuid",
-  "idField": "uuid",
-  "fieldName": "string",
-  "idClient": "uuid",
-  "clientName": "string",
-  "clientEmail": "string",
-  "clientPhone": "string",
-  "dateStart": "datetime",
-  "dateEnd": "datetime",
-  "total": 120.00,
-  "status": "confirmed",
-  "observations": "string",
-  "createdIn": "datetime",
-  "amount": 60.00,
-  "typePayment": "QR"
+BookingResponse:
+json{
+"idBooking": "uuid",
+"idField": "uuid",
+"fieldName": "string",
+"idClient": "uuid",
+"clientName": "string",
+"clientEmail": "string",
+"clientPhone": "string",
+"dateStart": "datetime",
+"dateEnd": "datetime",
+"total": 120.00,
+"status": "confirmed",
+"observations": "string",
+"createdIn": "datetime",
+"amount": 60.00,
+"typePayment": "QR"
 }
-```
 
----
+*Validaciones*
 
-## Validaciones de negocio
+No se puede reservar una cancha con estado not_available
+No se permiten reservas con solapamiento de horario en la misma cancha (las canceladas no cuentan)
+Al cancelar una reserva, el horario vuelve a quedar disponible automáticamente
+El pago inicial debe ser al menos el 50% del total calculado
+No se puede cancelar una reserva con menos de 1 hora de anticipación
+No se puede editar una reserva cancelada o que ya inició
+Al editar, el total se recalcula y la bill se actualiza; si hay pago adicional, se registra un nuevo payment
+Al crear la cuenta se necesitan min 6 caracteres
 
-- No se puede reservar una cancha con estado not_available
-- No se permiten reservas con solapamiento de horario en la misma cancha (excluyendo canceladas)
-- El pago inicial debe ser al menos el 50% del total calculado
-- No se puede cancelar una reserva con menos de 1 hora de anticipacion
-- No se puede editar una reserva cancelada o que ya inicio
-- Al editar, el total se recalcula y la bill se actualiza; si hay pago adicional, se registra un nuevo payment
+*Por validar :c*
+No llegue a validar temas como el numero porque es medio ambiguo si tienes numero de otro pais 
+El eliminar reserva solo sirve en pc no en celu porque use el window.confirm() y cuando me di cuenta ya es muy tarde
 
----
+Variables de entorno
+VariableDefault localDATABASE_URLjdbc:postgresql://localhost:5432/proyecto_canchasDATABASE_USERNAMEpostgresDATABASE_PASSWORD—JWT_SECRETfields-secret-key-must-be-at-least-32-chars!!
 
-## Configuración y ejecución
+Ejecutar backend
+bashmvn spring-boot:run
+El servidor levanta en http://localhost:8080.
+esto ya no sirve mucho porque lo desplegue en render y vercel
 
-### Requisitos
+*Seguridad*
 
-- Java 17
-- Maven 3.8+
-- PostgreSQL 15 corriendo en localhost:5432
+Passwords hasheados con BCrypt 
+Tokens JWT firmados con HMAC-SHA256
+Expiración de token: 24 horas
+Sesión stateless: no hay cookies ni estado en servidor
+Los únicos endpoints que requieren autenticación son POST /bookings, PUT /bookings/:id y GET /bookings/my. Esto porque toman el id del cliente desde el token para evitar pasarlo manualmente
 
-### Base de datos
 
-Crear la base de datos:
-```sql
-CREATE DATABASE proyecto_canchas;
-```
-
-Convertir columnas de ENUM nativo a VARCHAR (necesario si la DB fue creada con tipos ENUM de PostgreSQL):
-```sql
-ALTER TABLE booking ALTER COLUMN status TYPE VARCHAR(50) USING status::VARCHAR;
-ALTER TABLE field ALTER COLUMN status TYPE VARCHAR(50) USING status::VARCHAR;
-ALTER TABLE payment ALTER COLUMN type TYPE VARCHAR(50) USING type::VARCHAR;
-ALTER TABLE bill ALTER COLUMN status TYPE VARCHAR(50) USING status::VARCHAR;
-```
-
-Permitir reservas sin cliente asociado:
-```sql
-ALTER TABLE booking ALTER COLUMN id_client DROP NOT NULL;
-```
-
-### Variables de configuración
-
-Editar src/main/resources/application.properties:
-```
-spring.datasource.url=jdbc:postgresql://localhost:5432/proyecto_canchas
-spring.datasource.username=postgres
-spring.datasource.password=tu_password
-spring.jpa.hibernate.ddl-auto=validate
-```
-
-### Ejecutar el backend
-
-```bash
-mvn spring-boot:run
-```
-
-El servidor levanta en http://localhost:8080
-
-### Ejecutar el frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-El frontend corre en http://localhost:5173 y hace proxy de /api hacia localhost:8080 mediante la configuración de Vite.
-
----
-
-## Seguridad
-
-- Passwords hasheados con BCrypt (strength default 10)
-- Tokens JWT firmados con HMAC-SHA256
-- Expiración de token: 24 horas
-- Sesión stateless: no hay cookies ni estado en servidor
-- CORS configurado para permitir http://localhost:5173 y http://localhost:5174
-- Todos los endpoints son accesibles sin autenticación excepto POST /bookings y GET /bookings/my, que requieren Bearer token válido
-
----
-
-## Estructura del proyecto
-
-```
+**Estructura del proyecto — Backend**
 src/main/java/pyroneta/fields/
 ├── config/         # SecurityConfig, CorsConfig, JwtUtil, JwtFilter
 ├── controller/     # AuthController, BookingController, FieldController
 ├── dto/            # AuthResponse, LoginRequest, RegisterRequest,
-│                   # CreateBookingRequest, BookingResponse, BookingPaymentStatusResponse
+│                   # CreateBookingRequest, BookingResponse
 ├── entity/         # Bill, Booking, Client, Field, Payment, Sport
 │   └── enums/      # StatusBill, StatusBooking, StatusField, TypePayment
 ├── repository/     # Interfaces Spring Data JPA
 └── service/        # AuthService, BookingService, FieldService
-```
+
+**Stack tecnológico — Frontend**
+
+React 18
+Vite 5
+React Router v6
+Axios 1.x
+
+
+Decisiones técnicas principales — Frontend
+Elegí React porque ya lo venía usando y ya me siento familiarizado. Vite lo preferí sobre el create default de react porque arranca mucho más rápido y el feedback en desarrollo es casi instantaneo
+Separé cada página en su propio archivo CSS porque honestamente asi lo siento mas ordenado  .El navbar tiene dos modos: transparente sobre el hero en el inicio, y compacto con hamburger en el resto de paginas, esto lo hice por full estetica
+El token JWT se guarda en localStorage bajo la clave cliente. Un interceptor de Axios lo adjunta automáticamente en cada petición autenticada, esto para ahorrar tiempo y mas comodidad al usuario
+Para las fechas decidi no usar toISOString() porque convierte a UTC y desplaza la hora guardada, todas las fechas se envían como string local en formato YYYY-MM-DDTHH:MM:00
+
+R*utas*
+PathPáginaAuth requerida/Home, carrusel de deportes, este agarra las imagenes de public/images, no le puse a todos imagenes porque no pillaba..
+/fieldsLista de canchas con filtros
+/fields/:id Detalle de cancha + vista de horarios
+/ookings/new?field=:idNueva reserva — calendario + slots
+/bookings/new?field=:id&edit=:bookingId Editar reserva existente
+/bookings Todas las reservas (esto seria solo del admin pero asumi q todos son admin por tiempo)
+/mybookings Mis reservas 
+/login Login
+/register Registro de nuevo usuario
+
+*Variables de entorno — Frontend*
+Crear un archivo .env en la raíz del proyecto frontend:
+VITE_API_URL=http://localhost:8080
+esto igual ya no importa porque logre exponerlo 
+
+Ejecutar frontend
+bashnpm install
+npm run dev
+La app levanta en http://localhost:5173.
+
+*Estructura del proyecto — Frontend*
+src/
+├── api/
+│   └── axios.js           # Instancia Axios + interceptor de auth + funciones de API
+├── components/
+│   ├── Navbar.jsx          # Navbar sticky/transparente + drawer lateral
+│   └── UserPopup.jsx       # Botón de avatar con dropdown de sesión
+├── css/
+│   ├── Navbar.css
+│   ├── Home.css
+│   ├── Fields.css
+│   ├── FieldDetail.css
+│   ├── NewBooking.css
+│   ├── Bookings.css
+│   └── MyBookings.css
+├── pages/
+│   ├── Home.jsx
+│   ├── Fields.jsx
+│   ├── FieldDetail.jsx
+│   ├── NewBooking.jsx
+│   ├── Bookings.jsx
+│   ├── MyBookings.jsx
+│   ├── Login.jsx
+│   └── Register.jsx
+├── App.jsx                 # Router + rutas
+└── main.jsx

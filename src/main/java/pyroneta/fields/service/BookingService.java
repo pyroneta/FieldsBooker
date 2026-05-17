@@ -33,14 +33,14 @@ public class BookingService {
 
         // 1. Find field and client
         Field field = fieldRepository.findById(request.getIdField())
-                .orElseThrow(() -> new RuntimeException("Field not found"));
+                .orElseThrow(() -> new RuntimeException("Cancah no encontrada"));
 
         Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
         // 2. Verify field availability
         if (field.getStatus() == StatusField.not_available) {
-            throw new RuntimeException("The field is not available");
+            throw new RuntimeException("ESta cancha no esta disponible");
         }
 
         // 3. Verify overlapping schedules
@@ -68,12 +68,12 @@ public class BookingService {
 
         if (request.getAmountPaid().compareTo(minimumRequired) < 0) {
             throw new RuntimeException(
-                    "Minimum payment is 50%. You must pay at least " +
+                    "El pago minimo es 50%. Debes pagar por lo menos " +
                             minimumRequired + " Bs"
             );
         }
 
-        // 6. Create booking
+
         Booking booking = new Booking();
         booking.setField(field);
         booking.setClient(client);
@@ -112,21 +112,21 @@ public class BookingService {
     public BookingResponse updateBooking(UUID idBooking, LocalDateTime dateStart, LocalDateTime dateEnd, BigDecimal additionalAmount) {
 
         Booking booking = bookingRepository.findById(idBooking)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
         if (booking.getStatus() == StatusBooking.cancelled) {
-            throw new RuntimeException("Cannot edit a cancelled booking");
+            throw new RuntimeException("No puedes editar una reserva cancelada");
         }
 
         if (LocalDateTime.now().isAfter(booking.getDateStart())) {
-            throw new RuntimeException("Cannot edit a booking that already started");
+            throw new RuntimeException("No puedes editar una reserva q ya empezo");
         }
 
         boolean overlap = bookingRepository.existsOverlapExcluding(
                 booking.getField().getIdField(), dateStart, dateEnd, idBooking);
 
         if (overlap) {
-            throw new RuntimeException("The field is already booked for that time");
+            throw new RuntimeException("La cancha ya esta reservada pa esa hora");
         }
 
         long hours = ChronoUnit.HOURS.between(dateStart, dateEnd);
@@ -166,12 +166,12 @@ public class BookingService {
     public BookingResponse cancelBooking(UUID idBooking) {
 
         Booking booking = bookingRepository.findById(idBooking)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
         // Validate at least 1 hour before
         if (LocalDateTime.now().isAfter(booking.getDateStart().minusHours(1))) {
             throw new RuntimeException(
-                    "Cannot cancel less than 1 hour in advance"
+                    "No puedes cancelar antes de 1 hora de la reserva"
             );
         }
 
@@ -198,7 +198,7 @@ public class BookingService {
 
     public BookingResponse findById(UUID idBooking) {
         Booking booking = bookingRepository.findById(idBooking)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
         return toResponseWithPayment(booking);
     }
 
@@ -230,7 +230,7 @@ public class BookingService {
     public Map<String, Object> paymentStatus(UUID idBooking) {
 
         Booking booking = bookingRepository.findById(idBooking)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
         BigDecimal paid = paymentRepository.findByBooking(booking)
                 .stream()

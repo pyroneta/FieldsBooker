@@ -20,7 +20,7 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (clientRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("An account with that email already exists");
+            throw new RuntimeException("Una cuenta con ese correo ya existe");
         }
 
         Client client = new Client();
@@ -44,10 +44,10 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         Client client = clientRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+                .orElseThrow(() -> new RuntimeException("Email o contraseña invalidas"));
 
         if (!passwordEncoder.matches(request.getPassword(), client.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
+            throw new RuntimeException("Email o contraseña invalidas");
         }
 
         String token = jwtUtil.generateToken(client.getIdClient(), client.getEmail());
