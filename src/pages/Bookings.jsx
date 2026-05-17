@@ -88,7 +88,7 @@ export default function Bookings() {
   return (
     <main className="res-page">
       <div className="res-header">
-        <h1 className="res-title">TODAS LAS <span>RESERVAS</span></h1>
+        <h1 className="res-title">TODAS LAS<br /><span>RESERVAS</span></h1>
       </div>
 
       {loading ? (
@@ -120,7 +120,7 @@ export default function Bookings() {
                 <div className="res-card-body">
                   <div className="res-card-left">
                     <h3 className="res-field">{b.fieldName || "Cancha"}</h3>
-                    <p className="res-client">👤 {b.clientName}</p>
+                    <p className="res-client">{b.clientPhone || "–"}</p>
                     <div className="res-time">
                       <span>🗓 {fmtDate(b.dateStart)}</span>
                       <span className="res-arrow">→</span>

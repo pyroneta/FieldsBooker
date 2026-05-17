@@ -1,11 +1,27 @@
 
 
 .fields-page {
+  position: relative;
   max-width: 1200px;
   margin: 0 auto;
   padding: 32px 40px 80px;
   width: 100%;
   flex: 1;
+}
+
+.fields-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 36px,
+    rgba(255,255,255,0.022) 36px,
+    rgba(255,255,255,0.022) 72px
+  );
 }
 
 /* Toolbar */
